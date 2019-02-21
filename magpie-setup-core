@@ -54,7 +54,7 @@ fi
 # Setup primary conf, log, and local scratchspace directories for projects
 #
 
-magpieprojects="HADOOP PIG MAHOUT HBASE HIVE PHOENIX SPARK KAFKA ZEPPELIN STORM ZOOKEEPER"
+magpieprojects="HADOOP PIG MAHOUT HBASE HIVE PHOENIX SPARK KAFKA ZEPPELIN STORM ZOOKEEPER TENSORFLOW_HOROVOD"
 
 for project in ${magpieprojects}
 do
@@ -246,6 +246,12 @@ fi
 if [ "${ZEPPELIN_SETUP}" == "yes" ]
 then
     cp ${MAGPIE_LOCAL_CONF_DIR}/job_masters ${ZEPPELIN_CONF_DIR}/masters
+fi
+
+if [ "${TENSORFLOW_HOROVOD_SETUP}" == "yes" ]
+then
+    # in mpi horovod all nodes are equal, so all are masters
+    cat ${MAGPIE_LOCAL_CONF_DIR}/job_masters ${MAGPIE_LOCAL_CONF_DIR}/job_workers > ${TENSORFLOW_HOROVOD_CONF_DIR}/masters
 fi
 
 if [ "${STORM_SETUP}" == "yes" ]

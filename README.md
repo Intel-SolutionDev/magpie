@@ -2,11 +2,11 @@ Magpie
 ------
 
 Magpie contains a number of scripts for running Big Data software in
-HPC environments.  Thus far, Hadoop, Spark, Hbase, Storm, Pig, Mahout,
-Phoenix, Kafka, Zeppelin, and Zookeeper are supported.  It currently
-supports running over the parallel file system Lustre and running over
-any generic network filesytem.  There is scheduler/resource manager
-support for Slurm, Moab, Torque, and LSF.
+HPC environments.  Thus far, Hadoop, Spark, TensorFlow with Horovod,
+Hbase, Storm, Pig, Mahout, Phoenix, Kafka, Zeppelin, and Zookeeper are
+supported.  It currently supports running over the parallel file
+system Lustre and running over any generic network filesytem.  There
+is scheduler/resource manager support for Slurm, Moab, Torque, and LSF.
 
 Some of the features presently supported:
 
@@ -23,8 +23,8 @@ Basic Idea
 The basic idea behind these scripts are to:
 
 1) Submit a Magpie batch script to allocate nodes on a cluster using
-   your HPC scheduler/resource manager.  Slurm, Moab+Slurm,
-   Moab+Torque and LSF+mpirun are currently supported.
+   your HPC scheduler/resource manager.  Slurm, Slurm+mpirun,
+   Moab+Slurm, Moab+Torque and LSF+mpirun are currently supported.
 
 2) The batch script will create configuration files for all
    appropriate projects (Hadoop, Spark, etc.)  The configuration files
@@ -65,6 +65,8 @@ Hadoop - 2.2.0, 2.3.0, 2.4.X, 2.5.X, 2.6.X, 2.7.X, 2.8.X, 2.9.X,
 
 Spark - 0.9.X, 1.1.X, 1.2.X, 1.3.X, 1.4.X, 1.5.X, 1.6.X, 2.0.X, 2.1.X,
         2.2.X, 2.3.X, 2.4.X
+        
+TensorFlow - 1.9, 1.12
 
 Hbase - 0.98.X, 0.99.X, 1.0.X, 1.1.X, 1.2.X, 1.3.X, 1.4.X
 

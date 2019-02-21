@@ -114,6 +114,11 @@ then
     default_storm_supervisor_slots_starting_port="6700"
 fi
 
+if [ "${TENSORFLOW_HOROVOD_SETUP}" == "yes" ]
+then
+    :
+fi
+
 if [ "${ZOOKEEPER_SETUP}" == "yes" ]
 then
     default_zookeeper_client_port="2181"

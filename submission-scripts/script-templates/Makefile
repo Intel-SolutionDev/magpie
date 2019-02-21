@@ -8,22 +8,23 @@
 #
 # INSERT_HDFSOVERNETWORKFS - insert HDFS over NetworkFS configuration
 #
-HADOOP_INCLUDE=y
-PIG_INCLUDE=y
-MAHOUT_INCLUDE=y
-HBASE_INCLUDE=y
-HIVE_INCLUDE=y
-PHOENIX_INCLUDE=y
-SPARK_INCLUDE=y
-KAFKA_INCLUDE=y
-STORM_INCLUDE=y
-ZEPPELIN_INCLUDE=y
-ZOOKEEPER_INCLUDE=y
+HADOOP_INCLUDE=n
+PIG_INCLUDE=n
+MAHOUT_INCLUDE=n
+HBASE_INCLUDE=n
+HIVE_INCLUDE=n
+PHOENIX_INCLUDE=n
+SPARK_INCLUDE=n
+KAFKA_INCLUDE=n
+STORM_INCLUDE=n
+ZEPPELIN_INCLUDE=n
+ZOOKEEPER_INCLUDE=n
+TENSORFLOW_HOROVOD_INCLUDE=y
 
 MAGPIE_NO_LOCAL_DIR=n
 MAGPIE_HOSTNAME_MAP=n
-INSERT_HDFSOVERLUSTRE=y
-INSERT_HDFSOVERNETWORKFS=y
+INSERT_HDFSOVERLUSTRE=n
+INSERT_HDFSOVERNETWORKFS=n
 
 #
 # Adjust any of these paths for your own local defaults
@@ -116,6 +117,7 @@ LOCAL_REQUIREMENTS=n
 LOCAL_REQUIREMENTS_FILE=/tmp/mylocal
 
 # Default job files
+SBATCH_MPIRUN_DEFAULT_JOB_FILE=slurm-%j.out
 SBATCH_SRUN_DEFAULT_JOB_FILE=slurm-%j.out
 MSUB_SLURM_SRUN_DEFAULT_JOB_FILE=moab-%j.out
 MSUB_TORQUE_PDSH_DEFAULT_JOB_FILE=moab-%j.out
@@ -123,7 +125,7 @@ LSF_MPIRUN_DEFAULT_JOB_FILE=lsf-%J.out
 
 .DEFAULT_GOAL=all
 
-all: msub-slurm-srun sbatch-srun msub-torque-pdsh lsf-mpirun
+all: msub-slurm-srun sbatch-srun msub-torque-pdsh lsf-mpirun sbatch-mpirun
 
 clean-sbatch-srun:
 	rm -f ../script-sbatch-srun/magpie.sbatch-srun*
@@ -137,7 +139,10 @@ clean-msub-torque-pdsh:
 clean-lsf-mpirun:
 	rm -f ../script-lsf-mpirun/magpie.lsf-mpirun*
 
-clean: clean-sbatch-srun clean-msub-slurm-srun clean-msub-torque-pdsh clean-lsf-mpirun
+clean-sbatch-mpirun:
+	rm -f ../script-sbatch-mpirun/magpie.sbatch-mpirun*
+
+clean: clean-sbatch-srun clean-msub-slurm-srun clean-msub-torque-pdsh clean-lsf-mpirun clean-sbatch-mpirun
 
 sbatch-srun: clean-sbatch-srun
 	$(call create-templates,$@,srun,$(SBATCH_SRUN_DEFAULT_JOB_FILE))
@@ -150,6 +155,9 @@ msub-torque-pdsh: clean-msub-torque-pdsh
 
 lsf-mpirun: clean-lsf-mpirun
 	$(call create-templates,$@,mpirun,$(LSF_MPIRUN_DEFAULT_JOB_FILE))
+
+sbatch-mpirun: clean-sbatch-mpirun
+	$(call create-templates,$@,mpirun,$(SBATCH_MPIRUN_DEFAULT_JOB_FILE))
 
 define common-substitution
 	sed -i -e 's;MAGPIESCRIPTSDIRPREFIX;$(MAGPIE_SCRIPTS_DIR_PREFIX);g' $(1)
@@ -220,7 +228,7 @@ endef
 # Perhaps there is a niftier way to do this in sed than what I'm doing, glad
 # to take suggestions.  I couldn't figure out a way to do it in 1 pass.
 define common-addition
-	for project in hadoop hbase hive phoenix pig mahout spark kafka zeppelin storm zookeeper; do \
+	for project in hadoop hbase hive phoenix pig mahout spark kafka zeppelin storm zookeeper tensorflow-horovod; do \
 		if echo $(2) | grep -q $$project; then \
 			sed -i -e "/@MAGPIE_JOB_TYPES@/a @MAGPIE_JOB_TYPES_TEMP@/" $(1); \
 			sed -i -e "/@MAGPIE_JOB_TYPES@/{r magpie-magpie-customizations-job-$$project" -e "}" $(1); \
@@ -307,6 +315,7 @@ define create-templates
 	$(eval MAGPIE_SPARK_WITH_YARN_AND_HDFS := ../script-$(SCHED)/magpie.$(SCHED)-spark-with-yarn-and-hdfs)
 	$(eval MAGPIE_SPARK_WITH_ZEPPELIN := ../script-$(SCHED)/magpie.$(SCHED)-spark-with-zeppelin)
 	$(eval MAGPIE_STORM := ../script-$(SCHED)/magpie.$(SCHED)-storm)
+	$(eval MAGPIE_TENSORFLOW_HOROVOD := ../script-$(SCHED)/magpie.$(SCHED)-tensorflow-horovod)
 	cp magpie-header $(MAGPIE)
 
 	$(call create-all)
@@ -322,6 +331,7 @@ define create-templates
 	$(if $(findstring "${HADOOP_INCLUDE}${SPARK_INCLUDE}", "yy"), $(call create-spark-with-yarn-and-hdfs))
 	$(if $(findstring "${ZEPPELIN_INCLUDE}", "y"), $(call create-spark-with-zeppelin))
 	$(if $(findstring "${STORM_INCLUDE}${ZOOKEEPER_INCLUDE}", "yy"), $(call create-storm))
+	$(if $(findstring "${TENSORFLOW_HOROVOD_INCLUDE}", "y"), $(call create-tensorflow-horovod))
 endef
 
 define create-all
@@ -378,6 +388,11 @@ define create-all
 			cat magpie-zookeeper >> $(MAGPIE); \
 		fi
 
+		if test "${TENSORFLOW_HOROVOD_INCLUDE}" = "y"; then \
+			cat magpie-tensorflow-horovod >> $(MAGPIE); \
+		fi
+
+
 	cat	magpie-run-job-header-substitution \
 		magpie-run-job-$(DIST) >> $(MAGPIE)
 	$(call common-substitution, ${MAGPIE},${JAVA_DEFAULT})
@@ -392,6 +407,7 @@ define create-all
 	$(call common-addition, ${MAGPIE}, $(if $(findstring "${ZEPPELIN_INCLUDE}", "y"), "zeppelin"))
 	$(call common-addition, ${MAGPIE}, $(if $(findstring "${STORM_INCLUDE}", "y"), "storm"))
 	$(call common-addition, ${MAGPIE}, $(if $(findstring "${ZOOKEEPER_INCLUDE}", "y"), "zookeeper"))
+	$(call common-addition, ${MAGPIE}, $(if $(findstring "${TENSORFLOW_HOROVOD_INCLUDE}", "y"), "tensorflow_horovod"))
 	$(call common-addition-end, ${MAGPIE})
 endef
 
@@ -646,4 +662,20 @@ define create-storm
 	sed -i -e "s/STORM_SETUP=.*/STORM_SETUP=yes/" $(MAGPIE_STORM)
 	sed -i -e "s/ZOOKEEPER_SETUP=.*/ZOOKEEPER_SETUP=yes/" $(MAGPIE_STORM)
 	sed -i -e "s/ZOOKEEPER_VERSION=\"\(.*\)\"/ZOOKEEPER_VERSION=\"$(STORM_ZOOKEEPER_VERSION_DEFAULT)\"/" $(MAGPIE_STORM)
+endef
+
+define create-tensorflow-horovod
+	echo "Creating magpie.$(SCHED)-tensorflow-horovod"
+	cat 	magpie-header \
+		magpie-config-$(SCHED) \
+		magpie-magpie-customizations-substitution \
+		magpie-general-configuration \
+		magpie-tensorflow-horovod \
+		magpie-run-job-header-substitution \
+		magpie-run-job-$(DIST) > $(MAGPIE_TENSORFLOW_HOROVOD)
+	$(call common-substitution, ${MAGPIE_TENSORFLOW_HOROVOD})
+	$(call common-additions, ${MAGPIE_TENSORFLOW_HOROVOD}, tensorflow-horovod)
+	sed -i -e "s/MAGPIE_JOB_TYPE=\"\(.*\)\"/MAGPIE_JOB_TYPE=\"tensorflow-horovod\"/" $(MAGPIE_TENSORFLOW_HOROVOD)
+	sed -i -e "s/TENSORFLOW_HOROVOD_SETUP=.*/TENSORFLOW_HOROVOD_SETUP=yes/" $(MAGPIE_TENSORFLOW_HOROVOD)
+
 endef

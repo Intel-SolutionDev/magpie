@@ -93,6 +93,14 @@ then
     (${MAGPIE_SCRIPTS_HOME}/magpie/job/magpie-job-storm-stormwordcount)
 fi
 
+if [ "${TENSORFLOW_HOROVOD_SETUP}" == "yes" ]
+then
+    echo "*******************************************************"
+    echo "* Running Tensorflow Horovod synthetic benchmark"
+    echo "*******************************************************"
+    (${MAGPIE_SCRIPTS_HOME}/magpie/job/magpie-job-tensorflow-horovod-synthetic-benchmark)
+fi
+
 if [ "${ZOOKEEPER_SETUP}" == "yes" ]
 then
     echo "*******************************************************"

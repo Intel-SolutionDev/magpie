@@ -206,3 +206,13 @@ then
 
     export ZOOKEEPER_CLIENT_PORT=${default_zookeeper_client_port}
 fi
+
+if [ "${TENSORFLOW_HOROVOD_SETUP}" == "yes" ]
+then
+    if [ ! -f "${TENSORFLOW_HOROVOD_CONF_DIR}/masters" ]
+    then
+        Magpie_output_internal_error "${TENSORFLOW_HOROVOD_CONF_DIR}/masters does not exist"
+    fi
+
+fi
+
