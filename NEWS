@@ -1,11 +1,25 @@
+Magpie 2.2
+----------
+With sbatch & srun, add experimental support for distributed
+ tensorflow support.
+
 Magpie 2.1
 ----------
+Support SPARK_NETWORK_TIMEOUT configuration option.
+Support SPARK_RDD_COMPRESS configuration option.
 Fix various deprecated warnings.
-Support Hbase 1.4.7 and 1.4.8
-- Update Hbase default to 1.4.8
+Fix broken Zeppelin dependencies.
+Alter default Spark webui ports to avoid conflicts with other web services.
+Support Hbase 1.4.7, 1.4.8, 1.4.9
+- Update Hbase default to 1.4.9
 Support Spark 2.4.0-bin-hadoop2.6, 2.4.0-bin-hadoop2.7, Spark
   2.3.2-bin-hadoop2.6, 2.3.2-bin-hadoop2.7
 - Update Spark default to 2.4.0-bin-hadoop2.7
+Support Hadoop 2.7.6, 2.7.7, 2.8.5, 2.9.2, 3.1.2, 3.2.0
+- Update Hadoop default to 3.2.0
+Support Zeppelin 0.8.0, 0.8.1
+- Update Zeppelin default to 0.8.1
+- Implement Shiro basic auth for Zeppelin, default requires a password being set
 
 Magpie 2.0
 ----------

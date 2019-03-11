@@ -36,9 +36,9 @@
 #
 # Also take into account additional nodes needed for other services.
 #
-# Many of the below can be configured on the msub command line.  If
-# you are more comfortable specifying these on the command line, feel
-# free to delete the customizations below.
+# Many of the below can be configured on the command line.  If you are
+# more comfortable specifying these on the command line, feel free to
+# delete the customizations below.
 
 #MSUB -l nodes=<my_node_count>
 
@@ -283,6 +283,7 @@ export JAVA_HOME="/usr/lib/jvm/jre-1.8.0/"
 
 # MAGPIE_PYTHON path used for:
 # - Spark PySpark path
+# - Launching tensorflow tasks
 export MAGPIE_PYTHON="/usr/bin/python"
 
 ############################################################################
@@ -321,7 +322,7 @@ export HADOOP_SETUP_TYPE="MR"
 # Make sure the version for Mapreduce version 1 or 2 matches whatever
 # you set in HADOOP_SETUP_TYPE
 #
-export HADOOP_VERSION="3.1.1"
+export HADOOP_VERSION="3.2.0"
 
 # Path to your Hadoop build/binaries
 #
@@ -1003,7 +1004,7 @@ export HBASE_SETUP=no
 
 # Version
 #
-export HBASE_VERSION="1.4.7"
+export HBASE_VERSION="1.4.9"
 
 # Path to your Hbase build/binaries
 #
@@ -1571,6 +1572,23 @@ export SPARK_JOB="sparkpi"
 #
 # export SPARK_SHUFFLE_MEMORY_FRACTION=0.2
 
+# SPARK_RDD_COMPRESS
+#
+# Should RDD's be compressed by default?  Defaults to true.  In HPC
+# environments with parallel file systems or local storage, the cost
+# of compressing / decompressing RDDs is likely a be a net win over
+# writing data to a parallel file system or using up the limited
+# amount of local storage space available.  However, for some users
+# this cost may not be worthwhile and should be disabled.
+#
+# Note that only serialized RDDs are compressed, such as with storage
+# level MEMORY_ONLY_SER or MEMORY_AND_DISK_SER.  All python RDDs are
+# serialized by default.
+#
+# Defaults to true.
+#
+# export SPARK_RDD_COMPRESS=true
+
 # SPARK_DEPLOY_SPREADOUT
 #
 # Per Spark documentation, "Whether the standalone cluster manager
@@ -1656,6 +1674,31 @@ export SPARK_JOB="sparkpi"
 # work before the next user uses the node.
 #
 # export SPARK_LOCAL_SCRATCH_DIR_CLEAR="yes"
+
+# SPARK_NETWORK_TIMEOUT
+#
+# This will configure many network timeout configurations within
+# Spark.  If you see that your jobs are regularly failing with timeout
+# issues, try increasing this value.  On large HPC systems, timeouts
+# may occur more often, such as on loaded parallel file systems or
+# busy networks.
+#
+# As of this version, this will configure:
+#
+# spark.network.timeout
+# spark.files.fetchTimeout
+# spark.rpc.askTimeout
+# spark.rpc.lookupTimeout
+# spark.core.connection.ack.wait.timeout
+# spark.shuffle.registration.timeout
+# spark.network.auth.rpcTimeout
+# spark.shuffle.sasl.timeout
+#
+# Note that some of this fields will only effect newer spark versions.
+#
+# Specified in seconds, by default 120.
+#
+# export SPARK_NETWORK_TIMEOUT=120
 
 # SPARK_YARN_STAGING_DIR
 #
@@ -1813,7 +1856,7 @@ export ZEPPELIN_SETUP=no
 
 # Zeppelin Version
 #
-export ZEPPELIN_VERSION="0.8.0"
+export ZEPPELIN_VERSION="0.8.1"
 
 # Path to your Zeppelin build/binaries
 #
@@ -1876,6 +1919,21 @@ export ZEPPELIN_JOB="checkzeppelinup"
 #
 # export ZEPPELIN_NOTEBOOK_DIR="/lustre/${USER}/zeppelin/notebook"
 
+# Zeppelin Notebook Authorization
+#
+# Set username, password, and roles for required shiro login authorization.
+# This setting must be in place prior to starting Zeppelin. The default 
+# shiro.conf file is configured with two roles, admin and role1. 'admin' 
+# allows configuration of the settings and 'role1' does not. Use ';' as a 
+# delimiter for multiple users.
+#export ZEPPELIN_NOTEBOOK_USERS="user1,password1,admin;user2,password2,role2"
+
+# Zeppelin Notebook Authorization Security
+#
+# If this is set to 'true', you must provide the shiro encrypted password.
+# An encrypted password can be created with the shiro-tools-hasher jar.
+# See Note[1] in docs/README.zeppelin for more information
+# export ZEPPELIN_NOTEBOOK_ENCRYPT_PASSWORD=true
 ############################################################################
 # Storm Core Configurations
 ############################################################################

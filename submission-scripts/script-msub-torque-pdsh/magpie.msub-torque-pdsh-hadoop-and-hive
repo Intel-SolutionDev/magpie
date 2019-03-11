@@ -36,9 +36,9 @@
 #
 # Also take into account additional nodes needed for other services.
 #
-# Many of the below can be configured on the msub command line.  If
-# you are more comfortable specifying these on the command line, feel
-# free to delete the customizations below.
+# Many of the below can be configured on the command line.  If you are
+# more comfortable specifying these on the command line, feel free to
+# delete the customizations below.
 
 #PBS -N <my_job_name>
 
@@ -286,7 +286,7 @@ export HADOOP_SETUP_TYPE="MR"
 # Make sure the version for Mapreduce version 1 or 2 matches whatever
 # you set in HADOOP_SETUP_TYPE
 #
-export HADOOP_VERSION="3.1.1"
+export HADOOP_VERSION="3.2.0"
 
 # Path to your Hadoop build/binaries
 #

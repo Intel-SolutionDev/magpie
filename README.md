@@ -61,7 +61,7 @@ please see ```doc/README```.  The following can be considered a
 summary of support.
 
 Hadoop - 2.2.0, 2.3.0, 2.4.X, 2.5.X, 2.6.X, 2.7.X, 2.8.X, 2.9.X,
-         3.0.X, 3.1.X
+         3.0.X, 3.1.X, 3.2.X
 
 Spark - 0.9.X, 1.1.X, 1.2.X, 1.3.X, 1.4.X, 1.5.X, 1.6.X, 2.0.X, 2.1.X,
         2.2.X, 2.3.X, 2.4.X
@@ -85,7 +85,7 @@ Phoenix - 4.5.X, 4.6.0, 4.7.0, 4.8.X, 4.9.0, 4.10.1, 4.11.0, 4.12.0,
 
 Kafka - 2.11-0.9.0.0
 
-Zeppelin - 0.6.X, 0.7.X, 0.8.0
+Zeppelin - 0.6.X, 0.7.X, 0.8.X
 
 Older Supported Packages & Features
 -----------------------------------
