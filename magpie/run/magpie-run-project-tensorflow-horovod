@@ -39,12 +39,13 @@ Magpie_run_tensorflow_horovod () {
     if [ "${TENSORFLOW_HOROVOD_JOB}" == "cnn-benchmark" ]
     then
 
-        TENSORFLOW_HOROVOD_EXECUTABLE="${MAGPIE_SCRIPTS_HOME}/magpie/job/magpie-job-tensorflow-horovod-cnn-benchmark"
+        TENSORFLOW_HOROVOD_EXECUTABLE="${MAGPIE_TF_CNN_BENCHMARK_PY_FILE} ${MAGPIE_TF_CNN_BENCHMARK_PARAMETERS}"
 
     elif [ "${TENSORFLOW_HOROVOD_JOB}" == "synthetic-benchmark" ]
     then
-
-        TENSORFLOW_HOROVOD_EXECUTABLE="${MAGPIE_SCRIPTS_HOME}/magpie/job/magpie-job-tensorflow-horovod-synthetic-benchmark"
+        # source code used for this smoke test was downloaded from
+        # https://github.com/horovod/horovod/blob/f7a24e6860c202c4694a1dded0a5098edd6b4880/examples/tensorflow_synthetic_benchmark.py
+        TENSORFLOW_HOROVOD_EXECUTABLE="${MAGPIE_SCRIPTS_HOME}/magpie/job/magpie-job-tensorflow-horovod-synthetic-benchmark.py ${MAGPIE_TF_SYNTHETIC_BENCHMARK_PARAMETERS}"
 
     elif [ "${TENSORFLOW_HOROVOD_JOB}" == "script" ]
     then
@@ -58,13 +59,13 @@ Magpie_run_tensorflow_horovod () {
     fi
 
     # run selected executable and wait
-    ${MAGPIE_SCRIPTS_HOME}/magpie/run/magpie-run-execute script ${TENSORFLOW_HOROVOD_EXECUTABLE} &
+    ${MAGPIE_SCRIPTS_HOME}/magpie/run/magpie-run-execute-distributed "${MAGPIE_PYTHON} ${TENSORFLOW_HOROVOD_EXECUTABLE}" &
     local scriptpid=$!
     Magpie_wait_script_sigusr2_on_job_timeout ${scriptpid}
 
 }
 
-Magpie_teardown_tensorflow_horovod () {
+Magpie_run_stop_tensorflow_horovod () {
 
     if [ "${magpie_run_tensorflow_horovod_should_be_torndown}" == "1" ]
     then

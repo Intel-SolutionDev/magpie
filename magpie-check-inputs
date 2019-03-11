@@ -1194,7 +1194,7 @@ fi
 
 if [ "${TENSORFLOW_SETUP}" == "yes" ]
 then
-    __Magpie_check_must_be_set "PYTHON_HOME" "for Tensorflow"
+    __Magpie_check_must_be_set "MAGPIE_PYTHON" "for Tensorflow"
 
     if [ "${TENSORFLOW_JOB}" != "tfadd" ] \
         && [ "${TENSORFLOW_JOB}" != "script" ]
@@ -1215,6 +1215,7 @@ fi
 
 if [ "${TENSORFLOW_HOROVOD_SETUP}" == "yes" ]
 then
+    __Magpie_check_must_be_set "MAGPIE_PYTHON" "for Tensorflow"
 
     if [[ ${MAGPIE_SUBMISSION_TYPE} != *mpirun ]]
     then

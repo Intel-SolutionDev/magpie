@@ -36,7 +36,6 @@ source ${MAGPIE_SCRIPTS_HOME}/magpie/run/magpie-run-project-hadoop
 source ${MAGPIE_SCRIPTS_HOME}/magpie/run/magpie-run-project-hbase
 source ${MAGPIE_SCRIPTS_HOME}/magpie/run/magpie-run-project-kafka
 source ${MAGPIE_SCRIPTS_HOME}/magpie/run/magpie-run-project-mahout
-source ${MAGPIE_SCRIPTS_HOME}/magpie/run/magpie-run-project-tensorflow-horovod
 source ${MAGPIE_SCRIPTS_HOME}/magpie/run/magpie-run-project-pig
 source ${MAGPIE_SCRIPTS_HOME}/magpie/run/magpie-run-project-phoenix
 source ${MAGPIE_SCRIPTS_HOME}/magpie/run/magpie-run-project-hive
@@ -148,9 +147,6 @@ Magpie_run_start_zeppelin
 # Will set magpie_run_storm_should_be_torndown & magpie_run_storm_setup_successful appropriately
 Magpie_run_start_storm
 
-# Will set magpie_run_tensorflow_horovod_should_be_torndown & magpie_run_tensorflow_horovod_setup_successful appropriately
-Magpie_run_start_tensorflow_horovod
-
 # Make sure all setup passed
 if [ "${magpie_run_zookeeper_setup_successful}" == "1" ] \
     && [ "${magpie_run_hadoop_setup_successful}" == "1" ] \
@@ -160,8 +156,7 @@ if [ "${magpie_run_zookeeper_setup_successful}" == "1" ] \
     && [ "${magpie_run_kafka_setup_successful}" == "1" ] \
     && [ "${magpie_run_zeppelin_setup_successful}" == "1" ] \
     && [ "${magpie_run_hive_setup_successful}" == "1" ] \
-    && [ "${magpie_run_storm_setup_successful}" == "1" ] \
-    && [ "${magpie_run_tensorflow_horovod_setup_successful}" == "1" ]
+    && [ "${magpie_run_storm_setup_successful}" == "1" ]
 then
     if [ "${MAGPIE_JOB_TYPE}" == "script" ]
     then
@@ -220,9 +215,6 @@ then
     elif [ "${MAGPIE_JOB_TYPE}" == "zookeeper" ]
     then
         Magpie_run_zookeeper
-    elif [ "${MAGPIE_JOB_TYPE}" == "tensorflow-horovod" ]
-    then
-        Magpie_run_tensorflow_horovod
     elif [ "${MAGPIE_JOB_TYPE}" == "testall" ]
     then
         echo "*******************************************************"
@@ -263,9 +255,6 @@ Magpie_run_stop_hadoop
 # Zookeeper teardown comes last, as other things like Hbase & Storm require it
 # Sets magpie_run_zookeeper_teardown_complete if teardown done
 Magpie_run_stop_zookeeper
-
-# Sets magpie_run_tensorflow_horovod_teardown_complete if teardown done
-Magpie_teardown_tensorflow_horovod
 
 exit 0
 

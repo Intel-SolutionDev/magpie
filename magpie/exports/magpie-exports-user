@@ -233,12 +233,4 @@ then
     export MAGPIE_TENSORFLOW_MAX_RANK=`expr ${MAGPIE_NODE_COUNT} - 1`
 fi
 
-if [ "${TENSORFLOW_HOROVOD_SETUP}" == "yes" ]
-then
-    if [ ! -f "${TENSORFLOW_HOROVOD_CONF_DIR}/masters" ]
-    then
-        Magpie_output_internal_error "${TENSORFLOW_HOROVOD_CONF_DIR}/masters does not exist"
-    fi
-
-fi
 

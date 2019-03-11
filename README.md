@@ -2,7 +2,7 @@ Magpie
 ------
 
 Magpie contains a number of scripts for running Big Data software in
-HPC environments.  Thus far, Hadoop, Spark, TensorFlow with Horovod,
+HPC environments.  Thus far, Hadoop, Spark, TensorFlow w/ & w/o Horovod,
 Hbase, Storm, Pig, Mahout, Phoenix, Kafka, Zeppelin, and Zookeeper are
 supported.  It currently supports running over the parallel file
 system Lustre and running over any generic network filesytem.  There

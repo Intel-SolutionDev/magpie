@@ -114,12 +114,4 @@ then
     fi
 fi
 
-if [ "${TENSORFLOW_HOROVOD_SETUP}" == "yes" ]
-then
-    (${MAGPIE_SCRIPTS_HOME}/magpie/setup/magpie-setup-project-tensorflow-horovod)
-    if [ $? -ne 0 ] ; then
-        exit 1
-    fi
-fi
-
 exit 0
