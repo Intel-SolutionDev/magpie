@@ -20,16 +20,23 @@ source ${MAGPIE_SCRIPTS_HOME}/magpie/lib/magpie-lib-log
 
 Magpie_run_start_tensorflow_horovod () {
 
-    if [ "${TENSORFLOW_HOROVOD_SETUP}" != "yes" ]
+    if [ "${TENSORFLOW_HOROVOD_SETUP}" == "yes" ] && [ "${magpie_run_prior_startup_successful}" == "true" ]
     then
+        echo "*******************************************************"
+        echo "*"
+        echo "* Tensorflow Horovod Information"
+        echo "*"
+        echo "* Running with python = ${MAGPIE_PYTHON}"
+        echo "* With mpirun options = ${MPIRUN_OPTIONS}"
+        echo "*******************************************************"
+
+        magpie_run_tensorflow_horovod_should_be_torndown=1
+        magpie_run_tensorflow_horovod_setup_successful=1
+    else
         magpie_run_tensorflow_horovod_should_be_torndown=0
         magpie_run_tensorflow_horovod_setup_successful=1
-        return 0
     fi
 
-    magpie_run_tensorflow_horovod_should_be_torndown=1
-    magpie_run_tensorflow_horovod_setup_successful=1
-    return 0
 }
 
 Magpie_run_tensorflow_horovod () {
@@ -66,9 +73,5 @@ Magpie_run_tensorflow_horovod () {
 }
 
 Magpie_run_stop_tensorflow_horovod () {
-
-    if [ "${magpie_run_tensorflow_horovod_should_be_torndown}" == "1" ]
-    then
-        magpie_run_tensorflow_horovod_teardown_complete=1
-    fi
+    magpie_run_tensorflow_horovod_teardown_complete=1
 }

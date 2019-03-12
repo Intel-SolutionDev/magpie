@@ -1,7 +1,9 @@
 Magpie 2.2
 ----------
 With sbatch & srun, add experimental support for distributed
- Tensorflow and Tensorflow with Horovod on top of MPI support.
+ tensorflow support.
+Add new submission script type "sbatchmpirun"
+With sbatch & mpirun, add experimental support for Tensorflow with Horovod
 
 Magpie 2.1
 ----------

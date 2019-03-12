@@ -80,11 +80,3 @@ export TENSORFLOW_HOROVOD_JOB=synthetic-benchmark
 # if TENSORFLOW_HOROVOD_JOB is set to script, TENSORFLOW_HOROVOD_SCRIPT_PATH is necessary
 #export TENSORFLOW_HOROVOD_SCRIPT_PATH=/path/to/executable
 
-############################################################################
-# Tensorflow Horovod customization of MPI settings
-############################################################################
-
-# sourcing settings files, loading modules, activating virtualenvs should be placed here
-
-# custom MPIRUN_OPTIONS can be placed here
-

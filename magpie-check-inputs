@@ -263,7 +263,7 @@ if [ "${MAGPIE_JOB_TYPE}" != "hadoop" ] \
 then
     echo "MAGPIE_JOB_TYPE must be set to hadoop, hbase, pig, mahout, phoenix, spark, \
           kafka, zeppelin, storm, hive, zookeeper, tensorflow, tensorflow-horovod, \
-          testall, script, teractive, or setuponly"
+          testall, script, interactive, or setuponly"
     exit 1
 fi
 

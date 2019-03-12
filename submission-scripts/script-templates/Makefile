@@ -24,8 +24,8 @@ TENSORFLOW_HOROVOD_INCLUDE=y
 
 MAGPIE_NO_LOCAL_DIR=n
 MAGPIE_HOSTNAME_MAP=n
-INSERT_HDFSOVERLUSTRE=n
-INSERT_HDFSOVERNETWORKFS=n
+INSERT_HDFSOVERLUSTRE=y
+INSERT_HDFSOVERNETWORKFS=y
 
 #
 # Adjust any of these paths for your own local defaults
@@ -147,7 +147,7 @@ clean: clean-sbatch-srun clean-msub-slurm-srun clean-msub-torque-pdsh clean-lsf-
 
 sbatch-srun: clean-sbatch-srun
 	$(call create-bigdata-templates,$@,srun,$(SBATCH_SRUN_DEFAULT_JOB_FILE))
-	$(call create-distributed-templates,$@,srun,$(SBATCH_SRUN_DEFAULT_JOB_FILE))
+	$(call create-tensorflow-templates,$@,srun,$(SBATCH_SRUN_DEFAULT_JOB_FILE))
 
 msub-slurm-srun: clean-msub-slurm-srun
 	$(call create-bigdata-templates,$@,srun,$(MSUB_SLURM_SRUN_DEFAULT_JOB_FILE))
@@ -159,7 +159,7 @@ lsf-mpirun: clean-lsf-mpirun
 	$(call create-bigdata-templates,$@,mpirun,$(LSF_MPIRUN_DEFAULT_JOB_FILE))
 
 sbatch-mpirun: clean-sbatch-mpirun
-	$(call create-distributed-templates,$@,mpirun,$(SBATCH_MPIRUN_DEFAULT_JOB_FILE))
+	$(call create-tensorflow-templates,$@,mpirun,$(SBATCH_MPIRUN_DEFAULT_JOB_FILE))
 
 define common-substitution
 	sed -i -e 's;MAGPIESCRIPTSDIRPREFIX;$(MAGPIE_SCRIPTS_DIR_PREFIX);g' $(1)
@@ -255,24 +255,24 @@ define common-additions
 endef
 
 define create-bigdata-templates
-	cp magpie-magpie-customizations magpie-magpie-customizations-substitution-daemon
+	cp magpie-magpie-customizations magpie-magpie-customizations-substitution-bigdata
 
-	sed -i -e "/@MAGPIE_SCRIPT@/{r magpie-magpie-customizations-script" -e "d}" magpie-magpie-customizations-substitution-daemon
-	sed -i -e "/@MAGPIE_INTERACTIVE@/{r magpie-magpie-customizations-interactive" -e "d}" magpie-magpie-customizations-substitution-daemon
-	sed -i -e "/@MAGPIE_SETUPONLY@/{r magpie-magpie-customizations-setuponly" -e "d}" magpie-magpie-customizations-substitution-daemon
-	sed -i -e "/@MAGPIE_REMOTE_SHELL@/{r magpie-magpie-customizations-remote-shell" -e "d}" magpie-magpie-customizations-substitution-daemon
-	sed -i -e "/@MAGPIE_ENVIRONMENT_VARIABLE_SCRIPT@/{r magpie-magpie-customizations-environment-variable-script" -e "d}" magpie-magpie-customizations-substitution-daemon
+	sed -i -e "/@MAGPIE_SCRIPT@/{r magpie-magpie-customizations-script" -e "d}" magpie-magpie-customizations-substitution-bigdata
+	sed -i -e "/@MAGPIE_INTERACTIVE@/{r magpie-magpie-customizations-interactive" -e "d}" magpie-magpie-customizations-substitution-bigdata
+	sed -i -e "/@MAGPIE_SETUPONLY@/{r magpie-magpie-customizations-setuponly" -e "d}" magpie-magpie-customizations-substitution-bigdata
+	sed -i -e "/@MAGPIE_REMOTE_SHELL@/{r magpie-magpie-customizations-remote-shell" -e "d}" magpie-magpie-customizations-substitution-bigdata
+	sed -i -e "/@MAGPIE_ENVIRONMENT_VARIABLE_SCRIPT@/{r magpie-magpie-customizations-environment-variable-script" -e "d}" magpie-magpie-customizations-substitution-bigdata
 
 	if test "${MAGPIE_NO_LOCAL_DIR}" = "y"; then \
-		sed -i -e "/@MAGPIE_NO_LOCAL_DIR@/{r magpie-magpie-customizations-no-local-dir" -e "d}" magpie-magpie-customizations-substitution-daemon; \
+		sed -i -e "/@MAGPIE_NO_LOCAL_DIR@/{r magpie-magpie-customizations-no-local-dir" -e "d}" magpie-magpie-customizations-substitution-bigdata; \
 	else \
-		sed -i -e "/@MAGPIE_NO_LOCAL_DIR@/,+1d" magpie-magpie-customizations-substitution-daemon; \
+		sed -i -e "/@MAGPIE_NO_LOCAL_DIR@/,+1d" magpie-magpie-customizations-substitution-bigdata; \
 	fi
 
 	if test "${MAGPIE_HOSTNAME_MAP}" = "y"; then \
-		sed -i -e "/@MAGPIE_HOSTNAME_MAP@/{r magpie-magpie-customizations-hostname-map" -e "d}" magpie-magpie-customizations-substitution-daemon; \
+		sed -i -e "/@MAGPIE_HOSTNAME_MAP@/{r magpie-magpie-customizations-hostname-map" -e "d}" magpie-magpie-customizations-substitution-bigdata; \
 	else \
-		sed -i -e "/@MAGPIE_HOSTNAME_MAP@/,+1d" magpie-magpie-customizations-substitution-daemon; \
+		sed -i -e "/@MAGPIE_HOSTNAME_MAP@/,+1d" magpie-magpie-customizations-substitution-bigdata; \
 	fi
 
 	cp magpie-hadoop-filesystem magpie-hadoop-filesystem-substitution
@@ -339,7 +339,7 @@ define create-bigdata-templates
 	$(if $(findstring "${STORM_INCLUDE}${ZOOKEEPER_INCLUDE}", "yy"), $(call create-storm))
 endef
 
-define create-distributed-templates
+define create-tensorflow-templates
 	cp magpie-magpie-customizations magpie-magpie-customizations-substitution-tensorflow
 
 	sed -i -e "/@MAGPIE_SCRIPT@/d" magpie-magpie-customizations-substitution-tensorflow
@@ -378,10 +378,10 @@ define create-distributed-templates
 	echo "Creating magpie.$(SCHED)"
 	mkdir -p ../script-$(SCHED)
 	$(eval MAGPIE_TENSORFLOW := ../script-$(SCHED)/magpie.$(SCHED)-tensorflow)
-    $(eval MAGPIE_TENSORFLOW_HOROVOD := ../script-$(SCHED)/magpie.$(SCHED)-tensorflow-horovod)
+	$(eval MAGPIE_TENSORFLOW_HOROVOD := ../script-$(SCHED)/magpie.$(SCHED)-tensorflow-horovod)
 
 	$(if $(findstring "${TENSORFLOW_INCLUDE}", "y"), $(call create-tensorflow))
-    $(if $(findstring "${TENSORFLOW_HOROVOD_INCLUDE}", "y"), $(call create-tensorflow-horovod))
+	$(if $(findstring "${TENSORFLOW_HOROVOD_INCLUDE}", "y"), $(call create-tensorflow-horovod))
 endef
 
 define create-all
@@ -391,7 +391,7 @@ define create-all
 		magpie-config-$(SCHED)-header \
 		magpie-config-bigdata-instructions \
 		magpie-config-$(SCHED)-bigdata \
-		magpie-magpie-customizations-substitution-daemon \
+		magpie-magpie-customizations-substitution-bigdata \
 		magpie-general-configuration-header \
 		magpie-general-configuration-java \
 		magpie-general-configuration-python > $(MAGPIE)
@@ -442,7 +442,6 @@ define create-all
 			cat magpie-zookeeper >> $(MAGPIE); \
 		fi
 
-
 	cat	magpie-run-job-header-substitution \
 		magpie-run-job-$(DIST)-bigdata >> $(MAGPIE)
 	$(call common-substitution, ${MAGPIE},${JAVA_DEFAULT})
@@ -467,7 +466,7 @@ define create-hadoop
 		magpie-config-$(SCHED)-header \
 		magpie-config-bigdata-instructions \
 		magpie-config-$(SCHED)-bigdata \
-		magpie-magpie-customizations-substitution-daemon \
+		magpie-magpie-customizations-substitution-bigdata \
 		magpie-general-configuration-header \
 		magpie-general-configuration-java \
 		magpie-hadoop-core \
@@ -488,7 +487,7 @@ define create-hadoop-and-pig
 		magpie-config-$(SCHED)-header \
 		magpie-config-bigdata-instructions \
 		magpie-config-$(SCHED)-bigdata \
-		magpie-magpie-customizations-substitution-daemon \
+		magpie-magpie-customizations-substitution-bigdata \
 		magpie-general-configuration-header \
 		magpie-general-configuration-java \
 		magpie-hadoop-core \
@@ -512,7 +511,7 @@ echo "Creating magpie.$(SCHED)-hadoop-and-hive"
 		magpie-config-$(SCHED)-header \
 		magpie-config-bigdata-instructions \
 		magpie-config-$(SCHED)-bigdata \
-		magpie-magpie-customizations-substitution-daemon \
+		magpie-magpie-customizations-substitution-bigdata \
 		magpie-general-configuration-header \
 		magpie-general-configuration-java \
 		magpie-hadoop-core \
@@ -538,7 +537,7 @@ define create-hadoop-and-mahout
 		magpie-config-$(SCHED)-header \
 		magpie-config-bigdata-instructions \
 		magpie-config-$(SCHED)-bigdata \
-		magpie-magpie-customizations-substitution-daemon \
+		magpie-magpie-customizations-substitution-bigdata \
 		magpie-general-configuration-header \
 		magpie-general-configuration-java \
 		magpie-hadoop-core \
@@ -562,7 +561,7 @@ define create-hbase-with-hdfs
 		magpie-config-$(SCHED)-header \
 		magpie-config-bigdata-instructions \
 		magpie-config-$(SCHED)-bigdata \
-		magpie-magpie-customizations-substitution-daemon \
+		magpie-magpie-customizations-substitution-bigdata \
 		magpie-general-configuration-header \
 		magpie-general-configuration-java \
 		magpie-hadoop-core \
@@ -590,7 +589,7 @@ define create-hbase-with-hdfs-with-phoenix
 		magpie-config-$(SCHED)-header \
 		magpie-config-bigdata-instructions \
 		magpie-config-$(SCHED)-bigdata \
-		magpie-magpie-customizations-substitution-daemon \
+		magpie-magpie-customizations-substitution-bigdata \
 		magpie-general-configuration-header \
 		magpie-general-configuration-java \
 		magpie-hadoop-core \
@@ -621,7 +620,7 @@ define create-spark
 		magpie-config-$(SCHED)-header \
 		magpie-config-bigdata-instructions \
 		magpie-config-$(SCHED)-bigdata \
-		magpie-magpie-customizations-substitution-daemon \
+		magpie-magpie-customizations-substitution-bigdata \
 		magpie-general-configuration-header \
 		magpie-general-configuration-java \
 		magpie-general-configuration-python \
@@ -642,7 +641,7 @@ define create-spark-with-hdfs
 		magpie-config-$(SCHED)-header \
 		magpie-config-bigdata-instructions \
 		magpie-config-$(SCHED)-bigdata \
-		magpie-magpie-customizations-substitution-daemon \
+		magpie-magpie-customizations-substitution-bigdata \
 		magpie-general-configuration-header \
 		magpie-general-configuration-java \
 		magpie-general-configuration-python \
@@ -668,7 +667,7 @@ define create-spark-with-yarn
 		magpie-config-$(SCHED)-header \
 		magpie-config-bigdata-instructions \
 		magpie-config-$(SCHED)-bigdata \
-		magpie-magpie-customizations-substitution-daemon \
+		magpie-magpie-customizations-substitution-bigdata \
 		magpie-general-configuration-header \
 		magpie-general-configuration-java \
 		magpie-general-configuration-python \
@@ -696,7 +695,7 @@ define create-spark-with-yarn-and-hdfs
 		magpie-config-$(SCHED)-header \
 		magpie-config-bigdata-instructions \
 		magpie-config-$(SCHED)-bigdata \
-		magpie-magpie-customizations-substitution-daemon \
+		magpie-magpie-customizations-substitution-bigdata \
 		magpie-general-configuration-header \
 		magpie-general-configuration-java \
 		magpie-general-configuration-python \
@@ -722,7 +721,7 @@ define create-spark-with-zeppelin
 		magpie-config-$(SCHED)-header \
 		magpie-config-bigdata-instructions \
 		magpie-config-$(SCHED)-bigdata \
-		magpie-magpie-customizations-substitution-daemon \
+		magpie-magpie-customizations-substitution-bigdata \
 		magpie-general-configuration-header \
 		magpie-general-configuration-java \
 		magpie-general-configuration-python \
@@ -746,7 +745,7 @@ define create-storm
 		magpie-config-$(SCHED)-header \
 		magpie-config-bigdata-instructions \
 		magpie-config-$(SCHED)-bigdata \
-		magpie-magpie-customizations-substitution-daemon \
+		magpie-magpie-customizations-substitution-bigdata \
 		magpie-general-configuration-header \
 		magpie-general-configuration-java \
 		magpie-storm \
@@ -782,6 +781,7 @@ endef
 define create-tensorflow-horovod
 	echo "Creating magpie.$(SCHED)-tensorflow-horovod"
 	cat 	magpie-shebang \
+		magpie-header-llnl \
 		magpie-header-intel \
 		magpie-config-$(SCHED)-header \
 		magpie-config-$(SCHED)-distributed \
@@ -791,8 +791,9 @@ define create-tensorflow-horovod
 		magpie-tensorflow-horovod \
 		magpie-run-job-header-substitution \
 		magpie-run-job-$(DIST)-distributed > $(MAGPIE_TENSORFLOW_HOROVOD)
-	$(call common-substitution, ${MAGPIE_TENSORFLOW_HOROVOD})
+	$(call common-substitution, ${MAGPIE_TENSORFLOW_HOROVOD},${JAVA_DEFAULT})
 	$(call common-additions, ${MAGPIE_TENSORFLOW_HOROVOD}, tensorflow-horovod)
 	sed -i -e "s/MAGPIE_JOB_TYPE=\"\(.*\)\"/MAGPIE_JOB_TYPE=\"tensorflow-horovod\"/" $(MAGPIE_TENSORFLOW_HOROVOD)
 	sed -i -e "s/TENSORFLOW_HOROVOD_SETUP=.*/TENSORFLOW_HOROVOD_SETUP=yes/" $(MAGPIE_TENSORFLOW_HOROVOD)
 endef
+
