@@ -609,10 +609,7 @@ if [ "${tensorflowtests}" == "y" ]; then
 fi
 if [ "${tensorflowhorovodtests}" == "y" ]; then
     if [ "${standardtests}" == "y" ]; then
-        if [[ ${submissiontype} == *mpirun ]]
-        then
-            GenerateTensorflowHorovodStandardTests
-        fi
+        GenerateTensorflowHorovodStandardTests
     fi
 fi
 

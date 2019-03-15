@@ -40,16 +40,19 @@ source ${MAGPIE_SCRIPTS_HOME}/magpie/run/magpie-run-project-tensorflow-horovod
 # Note that if MAGPIE_HOSTNAME_SCHEDULER_MAP set, MAGPIE_NODELIST may
 # have not been converted for this output.
 
-echo "*******************************************************"
-echo "* Magpie General Job Info"
-echo "*"
-echo "* Job Nodelist: ${MAGPIE_NODELIST}"
-echo "* Job Nodecount: ${MAGPIE_NODE_COUNT}"
-echo "* Job Timelimit in Minutes: ${MAGPIE_TIMELIMIT_MINUTES}"
-echo "* Job Name: ${MAGPIE_JOB_NAME}"
-echo "* Job ID: ${MAGPIE_JOB_ID}"
-echo "*"
-echo "*******************************************************"
+if [ "${MAGPIE_CLUSTER_NODERANK}" == "0" ]
+then
+    echo "*******************************************************"
+    echo "* Magpie General Job Info"
+    echo "*"
+    echo "* Job Nodelist: ${MAGPIE_NODELIST}"
+    echo "* Job Nodecount: ${MAGPIE_NODE_COUNT}"
+    echo "* Job Timelimit in Minutes: ${MAGPIE_TIMELIMIT_MINUTES}"
+    echo "* Job Name: ${MAGPIE_JOB_NAME}"
+    echo "* Job ID: ${MAGPIE_JOB_ID}"
+    echo "*"
+    echo "*******************************************************"
+fi
 
 # Global flag for setup check, will be set to false if any startup fails
 magpie_run_prior_startup_successful=true

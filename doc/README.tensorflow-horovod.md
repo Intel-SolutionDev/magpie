@@ -10,9 +10,7 @@ Instructions For Running TensorFlow Horovod
    
    Download and install:
    * TensorFlow
-   * OpenMPI
    * Horovod
-   * EPEL
    on all cluster's nodes.
    
    (Optional) If you are going to run TF CNN benchmarks clone the benchmarks
