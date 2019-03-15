@@ -7,10 +7,13 @@
 #submissiontype=lsf-mpirun
 #submissiontype=msub-slurm-srun
 #submissiontype=msub-torque-pdsh
-submissiontype=sbatch-srun
+#submissiontype=sbatch-srun
+submissiontype=sbatch-mpirun
 
 msubslurmsrunpartition=mycluster
 msubslurmsrunbatchqueue=pbatch
+
+sbatchmpirunpartition=debug
 
 sbatchsrunpartition=pbatch
 
@@ -26,7 +29,7 @@ lsfqueue=standard
 # zookeepernodecount will be added when necessary
 #
 # optional tweaks to test defaults to make some run faster
-basenodecount=4
+basenodecount=2
 zookeepernodecount=3
 hadoopterasortsize=10000000
 hbaseperformanceevalrowcount=50000
@@ -68,10 +71,10 @@ JAVA18PATH="/usr/lib/jvm/jre-1.8.0/"
 DEFAULT_JAVA_HOME=$JAVA18PATH
 
 MAGPIE_PYTHON_PATH="/usr/bin/python"
-MAGPIE_PYTHON_TENSORFLOW_PATH="/g/g0/achu/bigdata/tensorflow-try/venv2-tf-cpu/bin/python"
+MAGPIE_PYTHON_TENSORFLOW_PATH="/cluster_share/tensorflow/virtenv/bin/python2.7"
 
 # Adjust accordingly, most of you probably want ssh instead of mrsh
-REMOTE_CMD=mrsh
+REMOTE_CMD=ssh
 
 DEFAULT_LOCAL_REQUIREMENTS=n
 DEFAULT_LOCAL_REQUIREMENTS_FILE=/tmp/mylocal

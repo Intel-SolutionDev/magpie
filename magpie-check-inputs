@@ -1238,7 +1238,7 @@ then
 
     if [ "${TENSORFLOW_HOROVOD_JOB}" == "cnn-benchmark" ]
     then
-        __Magpie_check_must_be_set "MAGPIE_TF_CNN_BENCHMARK_PY_FILE" "for tensorflow horovod cnn-benchmark, python executable benchmark files have to be set"
+        __Magpie_check_must_be_set_and_is_regular_file "MAGPIE_TF_CNN_BENCHMARK_PY_FILE" "for tensorflow horovod cnn-benchmark, python executable benchmark files have to be set"
         __Magpie_check_must_be_set "MAGPIE_TF_CNN_BENCHMARK_PARAMETERS" "for tensorflow horovod some parameters should be passed"
 
     fi
