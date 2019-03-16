@@ -48,6 +48,7 @@ kafkatests=y
 zookeepertests=y
 zeppelintests=y
 tensorflowtests=n
+tensorflowhorovodtests=n
 
 # Sections to test
 # - version tests, test permutation of versions
